@@ -17,6 +17,6 @@ public final class ConfigurationTarification {
                 TypeClient.PARTICULIER, new AucuneRemise(),
                 TypeClient.ENTREPRISE, new RemiseEntreprise(),
                 TypeClient.PREMIUM, new RemisePremium());
-        return new CalculateurPrix(tarifs, remises);
+        return new CalculateurPrix(new AssembleurTarif(tarifs, remises));
     }
 }

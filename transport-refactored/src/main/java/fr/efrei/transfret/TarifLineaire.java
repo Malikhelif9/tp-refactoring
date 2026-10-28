@@ -13,7 +13,8 @@ abstract class TarifLineaire implements TarifTransport {
     }
 
     @Override
-    public double calculer(double distanceKm, double poidsKg, double volumeM3) {
-        return Math.max(minimum, distanceKm * prixParKm + poidsKg * prixParKg);
+    public double calculer(ParametresTarification parametres) {
+        return Math.max(minimum,
+                parametres.distanceKm() * prixParKm + parametres.poidsKg() * prixParKg);
     }
 }

@@ -12,22 +12,22 @@ class StrategieTarificationTest {
 
     @Test
     void tarifRouteCalculeLePrixParDistanceEtPoids() {
-        assertEquals(130, new TarifRoute().calculer(100, 100, 0), DELTA);
+        assertEquals(130, new TarifRoute().calculer(parametresDeBase()), DELTA);
     }
 
     @Test
     void tarifRailAppliqueLeMinimumDeFacturation() {
-        assertEquals(150, new TarifRail().calculer(10, 10, 0), DELTA);
+        assertEquals(150, new TarifRail().calculer(parametres(10, 10, 0)), DELTA);
     }
 
     @Test
     void tarifMerAppliqueLeMinimumDeFacturation() {
-        assertEquals(500, new TarifMer().calculer(10, 10, 0), DELTA);
+        assertEquals(500, new TarifMer().calculer(parametres(10, 10, 0)), DELTA);
     }
 
     @Test
     void tarifAirUtiliseLePoidsVolumetriqueQuandIlEstSuperieur() {
-        assertEquals(135.15, new TarifAir().calculer(100, 10, 0.1), DELTA);
+        assertEquals(135.15, new TarifAir().calculer(parametres(100, 10, 0.1)), DELTA);
     }
 
     @Test
@@ -59,5 +59,14 @@ class StrategieTarificationTest {
                 colis, 100, ModeTransport.ROUTE, false, false, TypeClient.ENTREPRISE), DELTA);
         assertEquals(104, calculateur.calculerPrixHT(
                 colis, 100, ModeTransport.ROUTE, false, false, TypeClient.PREMIUM), DELTA);
+    }
+
+    private static ParametresTarification parametresDeBase() {
+        return parametres(100, 100, 0);
+    }
+
+    private static ParametresTarification parametres(double distance, double poids, double volume) {
+        return new ParametresTarification(List.of(), (int) distance, poids, volume, 0,
+                false, false, TypeClient.PARTICULIER);
     }
 }

@@ -7,8 +7,9 @@ public class TarifAir implements TarifTransport {
     private static final double KILOGRAMMES_TAXABLES_PAR_METRE_CUBE = 167;
 
     @Override
-    public double calculer(double distanceKm, double poidsKg, double volumeM3) {
-        double poidsTaxable = Math.max(poidsKg, volumeM3 * KILOGRAMMES_TAXABLES_PAR_METRE_CUBE);
-        return distanceKm * PRIX_PAR_KM + poidsTaxable * PRIX_PAR_KG_TAXABLE;
+    public double calculer(ParametresTarification parametres) {
+        double poidsTaxable = Math.max(parametres.poidsKg(),
+                parametres.volumeM3() * KILOGRAMMES_TAXABLES_PAR_METRE_CUBE);
+        return parametres.distanceKm() * PRIX_PAR_KM + poidsTaxable * PRIX_PAR_KG_TAXABLE;
     }
 }
