@@ -12,9 +12,6 @@ public class ServiceExpedition {
     private static final int ID_PREMIER_SUFFIXE = 1000;
     private static final int NOMBRE_SUFFIXES_ID = 9000;
     private static final double COEFFICIENT_TVA = 1.2;
-    private static final double KM_PAR_MILLE_NAUTIQUE = 1.852;
-    private static final int DISTANCE_ROULAGE_AVION_KM = 2;
-    private static final int ALTITUDE_AVION_PIEDS = 35000;
     private static final double TAUX_FRAIS_ANNULATION = 0.5;
     private static final int TEMPERATURE_REFRIGERATION_CELSIUS = 4;
 
@@ -105,24 +102,8 @@ public class ServiceExpedition {
         e.setStatut(StatutExpedition.EN_COURS);
         Vehicule v = e.getVehicule();
         v.setDisponible(false);
-        try {
-            v.faireLePlein();
-        } catch (Exception ex) {
-        }
-        if (e.getMode() == ModeTransport.ROUTE || e.getMode() == ModeTransport.RAIL) {
-            v.rouler(e.getDistance());
-        } else if (e.getMode() == ModeTransport.MER) {
-            v.naviguer((int) (e.getDistance() / KM_PAR_MILLE_NAUTIQUE));
-        } else if (e.getMode() == ModeTransport.AIR) {
-            v.rouler(DISTANCE_ROULAGE_AVION_KM);
-            v.voler(ALTITUDE_AVION_PIEDS);
-        }
-        for (Colis c : e.getColis()) {
-            if (c.getType() == TypeMarchandise.REFRIGERE) {
-                v.activerRefrigeration(TEMPERATURE_REFRIGERATION_CELSIUS);
-                break;
-            }
-        }
+        v.partir(e.getDistance());
+        v.preparerExpedition(e.getColis(), TEMPERATURE_REFRIGERATION_CELSIUS);
         expeditions.mettreAJour(e);
         notificateur.notifier(e.getClient(), new MessageNotification(
                 "Votre expédition " + e.getId() + " est en route",

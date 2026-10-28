@@ -19,15 +19,9 @@ public interface IVehicule {
 
     void decharger(Colis colis);
 
-    void rouler(int km);
+    boolean peutPrendreEnCharge(ModeTransport mode, java.util.List<Colis> colis);
 
-    void naviguer(int milesNautiques);
+    void partir(int distanceKm);
 
-    void voler(int altitude);
-
-    void activerRefrigeration(double temperature);
-
-    boolean peutTransporterMatieresDangereuses();
-
-    void faireLePlein();
+    void preparerExpedition(java.util.List<Colis> colis, double temperatureRefrigeration);
 }

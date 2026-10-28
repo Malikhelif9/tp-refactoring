@@ -51,7 +51,11 @@ public abstract class Vehicule implements IVehicule {
         }
     }
 
-    public void faireLePlein() {
-        System.out.println("Plein effectué pour " + immatriculation);
+    protected static boolean contient(List<Colis> colis, TypeMarchandise type) {
+        return colis.stream().anyMatch(c -> c.getType() == type);
+    }
+
+    @Override
+    public void preparerExpedition(List<Colis> colis, double temperatureRefrigeration) {
     }
 }
