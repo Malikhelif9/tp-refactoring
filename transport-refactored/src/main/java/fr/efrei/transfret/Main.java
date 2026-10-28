@@ -12,7 +12,8 @@ public class Main {
         CanalSmsConsole sms = new CanalSmsConsole();
         Notificateur notificateur = new Notificateur(List.of(email, sms));
         ServiceClient serviceClient = new ServiceClient(clients, email);
-        ServiceExpedition serviceExpedition = new ServiceExpedition(expeditions, new CalculateurPrix(),
+        ServiceExpedition serviceExpedition = new ServiceExpedition(expeditions,
+                ConfigurationTarification.creerCalculateurPrix(),
                 new AffectationVehicule(new Flotte()), new ValidateurExpedition(), new EstimateurDelai(),
                 notificateur);
 

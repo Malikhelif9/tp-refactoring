@@ -40,7 +40,7 @@ public class NouveauSystemeAdapter implements SystemeTransport {
         canalSms = new CanalSmsConsole();
         Notificateur notificateur = new Notificateur(List.of(canalEmail, canalSms));
         serviceClient = new ServiceClient(clients, canalEmail);
-        serviceExpedition = new ServiceExpedition(expeditions, new CalculateurPrix(),
+        serviceExpedition = new ServiceExpedition(expeditions, ConfigurationTarification.creerCalculateurPrix(),
                 new AffectationVehicule(new Flotte()), new ValidateurExpedition(), new EstimateurDelai(),
                 notificateur);
     }
