@@ -37,6 +37,10 @@ public class ValidateurExpedition {
             System.out.println("ERREUR : pas d'option urgente pour le transport maritime");
             return OptionalInt.empty();
         }
+        if (urgent && mode == ModeTransport.FLUVIAL) {
+            System.out.println("ERREUR : pas d'option urgente pour le transport fluvial");
+            return OptionalInt.empty();
+        }
         int distance = Utils.getDistance(villeDepart, villeArrivee);
         if (distance == Utils.DISTANCE_INCONNUE) {
             System.out.println("ERREUR : trajet inconnu " + villeDepart + " -> " + villeArrivee);

@@ -31,6 +31,41 @@ class DecorateurTarificationTest {
     }
 
     @Test
+    void supplementHorsGabaritSAppliqueQuandUneDimensionDepasseDeuxMetres() {
+        ParametresTarification colisHorsGabarit = parametresDimensions(200.01, 100, 100);
+
+        assertEquals(143, new SupplementHorsGabarit(TARIF_ROUTE).calculer(colisHorsGabarit), DELTA);
+    }
+
+    @Test
+    void supplementHorsGabaritNeSappliquePasQuandLesDimensionsFontDeuxMetresOuMoins() {
+        ParametresTarification colisStandard = parametresDimensions(200, 200, 200);
+
+        assertEquals(130, new SupplementHorsGabarit(TARIF_ROUTE).calculer(colisStandard), DELTA);
+    }
+
+    @Test
+    void calculateurAppliqueLeSupplementHorsGabaritUneSeuleFoisParExpedition() {
+        CalculateurPrix calculateur = ConfigurationTarification.creerCalculateurPrixAvecSupplementHorsGabarit();
+        List<Colis> colis = List.of(
+                new Colis("hors gabarit", 100, 201, 100, 100, TypeMarchandise.STANDARD, 1000),
+                new Colis("autre hors gabarit", 100, 100, 100, 201, TypeMarchandise.STANDARD, 1000));
+
+        assertEquals(154, calculateur.calculerPrixHT(
+                colis, 100, ModeTransport.ROUTE, false, false, TypeClient.PARTICULIER), DELTA);
+    }
+
+    @Test
+    void configurationParDefautNeModifiePasLesPrixDesColisHorsGabarit() {
+        CalculateurPrix calculateur = ConfigurationTarification.creerCalculateurPrix();
+        List<Colis> colis = List.of(
+                new Colis("hors gabarit", 100, 201, 100, 100, TypeMarchandise.STANDARD, 1000));
+
+        assertEquals(130, calculateur.calculerPrixHT(
+                colis, 100, ModeTransport.ROUTE, false, false, TypeClient.PARTICULIER), DELTA);
+    }
+
+    @Test
     void urgenceMultiplieLePrixParUnEtDemi() {
         assertEquals(195, new SupplementUrgence(TARIF_ROUTE).calculer(parametres(true, false,
                 TypeClient.PARTICULIER, List.of())), DELTA);
@@ -79,20 +114,28 @@ class DecorateurTarificationTest {
 
     @Test
     void assembleurEmpileLesDecorateursDansLOrdreAttendu() {
-        TarifTransport chaine = new AssembleurTarif(
+        AssembleurTarif assembleur = assembleurTarif();
+        TarifTransport chaine = assembleur.assembler(ModeTransport.ROUTE);
+
+        assertEquals(221.825, chaine.calculer(parametres(true, true, TypeClient.ENTREPRISE,
+                List.of(TypeMarchandise.FRAGILE))), DELTA);
+        assertEquals(143, assembleur.assembler(ModeTransport.ROUTE)
+                .calculer(parametresDimensions(200.01, 100, 100)), DELTA);
+    }
+
+    private static AssembleurTarif assembleurTarif() {
+        return new AssembleurTarif(
                 Map.of(
                         ModeTransport.ROUTE, new TarifRoute(),
                         ModeTransport.RAIL, new TarifRail(),
                         ModeTransport.MER, new TarifMer(),
-                        ModeTransport.AIR, new TarifAir()),
+                        ModeTransport.AIR, new TarifAir(),
+                        ModeTransport.FLUVIAL, new TarifFluvial()),
                 Map.of(
                         TypeClient.PARTICULIER, new AucuneRemise(),
                         TypeClient.ENTREPRISE, new RemiseEntreprise(),
-                        TypeClient.PREMIUM, new RemisePremium()))
-                .assembler(ModeTransport.ROUTE);
-
-        assertEquals(221.825, chaine.calculer(parametres(true, true, TypeClient.ENTREPRISE,
-                List.of(TypeMarchandise.FRAGILE))), DELTA);
+                        TypeClient.PREMIUM, new RemisePremium()),
+                true);
     }
 
     private static ParametresTarification parametres(TypeMarchandise type) {
@@ -105,5 +148,11 @@ class DecorateurTarificationTest {
                 .map(type -> new Colis("colis", 100, 10, 10, 10, type, 1000))
                 .toList();
         return new ParametresTarification(colis, 100, 100, 0, 1000, urgent, assurance, typeClient);
+    }
+
+    private static ParametresTarification parametresDimensions(double longueur, double largeur, double hauteur) {
+        List<Colis> colis = List.of(new Colis(
+                "colis volumineux", 100, longueur, largeur, hauteur, TypeMarchandise.STANDARD, 1000));
+        return new ParametresTarification(colis, 100, 100, 0, 1000, false, false, TypeClient.PARTICULIER);
     }
 }

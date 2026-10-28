@@ -17,6 +17,7 @@ public class Utils {
     private static final int DISTANCE_LE_HAVRE_NEW_YORK_KM = 5850;
     private static final int DISTANCE_MARSEILLE_ALGER_KM = 760;
     private static final int DISTANCE_PARIS_NEW_YORK_KM = 5840;
+    private static final int DISTANCE_PARIS_LE_HAVRE_KM = 365;
 
     private static final DateTimeFormatter FORMAT_DATE =
             DateTimeFormatter.ofPattern("dd/MM/yyyy").withZone(ZoneId.systemDefault());
@@ -60,6 +61,8 @@ public class Utils {
             return DISTANCE_MARSEILLE_ALGER_KM;
         } else if ((a.equals("PARIS") && b.equals("NEW YORK")) || (a.equals("NEW YORK") && b.equals("PARIS"))) {
             return DISTANCE_PARIS_NEW_YORK_KM;
+        } else if ((a.equals("PARIS") && b.equals("LE HAVRE")) || (a.equals("LE HAVRE") && b.equals("PARIS"))) {
+            return DISTANCE_PARIS_LE_HAVRE_KM;
         }
         return DISTANCE_INCONNUE;
     }

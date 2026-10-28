@@ -31,6 +31,14 @@ class StrategieTarificationTest {
     }
 
     @Test
+    void tarifFluvialAppliqueLePrixEtLeMinimumDeFacturation() {
+        TarifFluvial tarif = new TarifFluvial();
+
+        assertEquals(300, tarif.calculer(parametres(365, 100, 0)), DELTA);
+        assertEquals(306, tarif.calculer(parametres(365, 8000, 0)), DELTA);
+    }
+
+    @Test
     void particulierNeBeneficiePasDeRemise() {
         assertEquals(6000, new AucuneRemise().appliquer(6000), DELTA);
     }
